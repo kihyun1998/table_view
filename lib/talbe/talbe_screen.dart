@@ -29,37 +29,17 @@ class TalbeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Table")),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            const double minWidth = 600;
-            final double width = maxWidth(constraints.maxWidth, minWidth);
+      body: Column(
+        children: [
+          /// TableHeaders
+          const TableColumn(),
 
-            /// 가로 스크롤
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: minWidth),
-                child: Column(
-                  children: [
-                    /// TableHeaders
-                    const TableColumn(),
-
-                    /// TableRows
-                    TableRow(rows: rows),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+          /// TableRows
+          TableRow(rows: rows),
+        ],
       ),
     );
   }
-
-  double maxWidth(double currentWidth, double minWidth) =>
-      currentWidth > minWidth ? currentWidth : minWidth;
 }
 
 /// Table Columns Field
