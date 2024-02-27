@@ -29,17 +29,37 @@ class TalbeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Table")),
-      body: Column(
-        children: [
-          /// TableHeaders
-          const TableColumn(),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            const double minWidth = 600;
+            final double width = maxWidth(constraints.maxWidth, minWidth);
 
-          /// TableRows
-          TableRow(rows: rows),
-        ],
+            /// 가로 스크롤
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: minWidth),
+                child: Column(
+                  children: [
+                    /// TableHeaders
+                    const TableColumn(),
+
+                    /// TableRows
+                    TableRow(rows: rows),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
+
+  double maxWidth(double currentWidth, double minWidth) =>
+      currentWidth > minWidth ? currentWidth : minWidth;
 }
 
 /// Table Columns Field
@@ -51,22 +71,28 @@ class TableColumn extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedRows = ref.watch(selectedRowProvider);
-    // final bool isAllSelected = selectedRows.length == 5000;
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+    final bool isAllSelected = selectedRows.length == 5000;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Row(
         children: [
-          TableHeader(
+          Checkbox(
+            value: isAllSelected,
+            onChanged: (bool? value) {
+              ref.read(selectedRowProvider.notifier).selectAll(value);
+            },
+          ),
+          const TableHeader(
             title: "ID",
           ),
-          TableHeader(
+          const TableHeader(
             title: "Name",
             flex: 3,
           ),
-          TableHeader(
+          const TableHeader(
             title: "Quantity",
           ),
-          TableHeader(
+          const TableHeader(
             title: "Price",
           ),
         ],

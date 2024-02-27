@@ -19,7 +19,17 @@ class SelectedRow extends _$SelectedRow {
       newState.remove(id);
       state = newState;
     }
+  }
 
-    print("$value, $id");
+  void selectAll(bool? value) {
+    if (value ?? false) {
+      final allSet = List.generate(5000, (index) => 'ID$index').toSet();
+      state = {...state, ...allSet};
+    } else {
+      final newState = {...state};
+      newState.clear();
+      state = newState;
+    }
+    print(state);
   }
 }

@@ -6,7 +6,7 @@ part of 'selected_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$selectedRowHash() => r'88709c8d437790479ac8367d14b597fb776439b8';
+String _$selectedRowHash() => r'51751ca22f0b3a3011e882b19e9722c9564de575';
 
 /// See also [SelectedRow].
 @ProviderFor(SelectedRow)
