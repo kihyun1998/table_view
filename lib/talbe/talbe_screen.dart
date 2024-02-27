@@ -57,12 +57,10 @@ class TalbeScreen extends StatelessWidget {
                       horizontal: 8.0, vertical: 4.0),
                   child: Row(
                     children: [
-                      Expanded(flex: 2, child: Text(row.id)),
-                      Expanded(flex: 3, child: Text(row.name)),
-                      Expanded(flex: 2, child: Text('${row.quantity}')),
-                      Expanded(
-                          flex: 2,
-                          child: Text('\$${row.price.toStringAsFixed(2)}')),
+                      TableData(title: row.id),
+                      TableData(title: row.name, flex: 3),
+                      TableData(title: '${row.quantity}'),
+                      TableData(title: '\$${row.price.toStringAsFixed(2)}'),
                     ],
                   ),
                 );
@@ -78,7 +76,30 @@ class TalbeScreen extends StatelessWidget {
   }
 }
 
-/// 테이블 헤더 코드
+/// Table Data Tile
+class TableData extends StatelessWidget {
+  const TableData({
+    Key? key,
+    this.flex = 2,
+    required this.title,
+  }) : super(key: key);
+
+  final int flex;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: flex,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        child: Text(title),
+      ),
+    );
+  }
+}
+
+/// Talbe Header Tile
 class TableHeader extends StatelessWidget {
   const TableHeader({
     Key? key,
