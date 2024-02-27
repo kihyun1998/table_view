@@ -9,5 +9,17 @@ class SelectedRow extends _$SelectedRow {
     return {};
   }
 
-  void 
+  void update(bool? value, String id) {
+    // state = value == true ? {...state, id} : state
+    //   ..remove(id);
+    if (value ?? false) {
+      state = {...state, id};
+    } else {
+      final newState = {...state};
+      newState.remove(id);
+      state = newState;
+    }
+
+    print("$value, $id");
+  }
 }
