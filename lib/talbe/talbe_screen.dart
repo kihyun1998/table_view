@@ -48,7 +48,7 @@ class TalbeScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: ListView.separated(
               itemCount: rows.length,
               itemBuilder: (context, index) {
                 final row = rows[index];
@@ -67,6 +67,9 @@ class TalbeScreen extends StatelessWidget {
                   ),
                 );
               },
+              separatorBuilder: (context, index) {
+                return const Divider();
+              },
             ),
           ),
         ],
@@ -75,6 +78,7 @@ class TalbeScreen extends StatelessWidget {
   }
 }
 
+/// 테이블 헤더 코드
 class TableHeader extends StatelessWidget {
   const TableHeader({
     Key? key,
