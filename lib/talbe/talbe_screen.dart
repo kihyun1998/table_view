@@ -82,10 +82,9 @@ class TalbeScreen extends StatelessWidget {
 class TableHeader extends StatelessWidget {
   const TableHeader({
     Key? key,
-    int? flex,
+    this.flex = 2,
     required this.title,
-  })  : flex = flex ?? 2,
-        super(key: key);
+  }) : super(key: key);
 
   final String title;
   final int flex;
@@ -94,9 +93,23 @@ class TableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       flex: flex,
-      child: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.bold),
+      child: Container(
+        padding: const EdgeInsets.all(8), // 패딩 추가
+        decoration: BoxDecoration(
+          color: Colors.blueGrey[100], // 배경색 추가
+          border: const Border(
+            right: BorderSide(color: Colors.grey, width: 0.5), // 우측 경계선 추가
+            bottom: BorderSide(color: Colors.grey, width: 0.5), // 하단 경계선 추가
+          ),
+        ),
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black87, // 텍스트 색상 변경
+          ),
+          textAlign: TextAlign.center, // 텍스트 중앙 정렬
+        ),
       ),
     );
   }
