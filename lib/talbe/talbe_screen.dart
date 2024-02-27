@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_view/talbe/model.dart';
 
-class TalbeScreen extends StatelessWidget {
+// final selectedRowsProvider = StateProvider<Set<String>>((ref) => {});
+
+class TalbeScreen extends ConsumerWidget {
   const TalbeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final List<String> columns = [
       'ID',
       'Name',
@@ -23,10 +26,13 @@ class TalbeScreen extends StatelessWidget {
       ),
     );
 
+    final selectedRows = ref.watch(selectedRowsProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text("Table")),
       body: Column(
         children: [
+          /// TableHeaders
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
             child: Row(
@@ -47,16 +53,34 @@ class TalbeScreen extends StatelessWidget {
               ],
             ),
           ),
+
+          /// TableRows
           Expanded(
             child: ListView.separated(
+              /// row's length
               itemCount: rows.length,
+
+              /// item builder
+              /// Area to make rows
               itemBuilder: (context, index) {
                 final row = rows[index];
+                final isSelected = selectedRows.contains(row.id);
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8.0, vertical: 4.0),
                   child: Row(
                     children: [
+                      Checkbox(
+                        value: isSelected,
+                        onChanged: (bool? value) {
+                          ref
+                              .read(selectedRowsProvider.notifier)
+                              .update((state) {
+                            return value == true ? {...state, row.id} : state
+                              ..remove(row.id);
+                          });
+                        },
+                      ),
                       TableData(title: row.id),
                       TableData(title: row.name, flex: 3),
                       TableData(title: '${row.quantity}'),
@@ -65,6 +89,8 @@ class TalbeScreen extends StatelessWidget {
                   ),
                 );
               },
+
+              /// Area for divider
               separatorBuilder: (context, index) {
                 return const Divider();
               },

@@ -13,9 +13,11 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const TalbeScreen(),
-            ));
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const TalbeScreen(),
+              ),
+            );
           },
           child: const Text("Column"),
         ),
