@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:table_view/example/simple_table/spage.dart';
 import 'package:table_view/example/table_view.dart';
 import 'package:table_view/talbe/talbe_screen.dart';
 
@@ -24,6 +25,7 @@ class HomePage extends StatelessWidget {
               },
               child: const Text("Column"),
             ),
+            const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(
@@ -33,6 +35,17 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text("Table page"),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ScrollableTableExample(),
+                  ),
+                );
+              },
+              child: const Text("scroll page"),
             ),
           ],
         ),
