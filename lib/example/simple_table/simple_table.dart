@@ -7,14 +7,15 @@ class SimpleTable extends ConsumerWidget {
   const SimpleTable({
     super.key,
     required this.rows,
-  });
+    double? minWidth,
+  }) : minWidth = minWidth ?? 0.0;
 
   final List<dynamic> rows;
+  final double minWidth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ScrollController scrollController = ScrollController();
-    const double minWidth = 800;
 
     return Scrollbar(
       controller: scrollController,

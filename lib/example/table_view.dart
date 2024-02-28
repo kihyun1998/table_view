@@ -21,6 +21,7 @@ class TablePage extends StatelessWidget {
       body: Center(
         child: SimpleTable(
           rows: rows,
+          minWidth: 800,
         ),
       ),
     );
