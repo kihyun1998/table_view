@@ -4,62 +4,53 @@ import 'package:table_view/talbe/model.dart';
 import 'package:table_view/talbe/provider/selected_provider.dart';
 
 class SimpleTable extends ConsumerWidget {
-  const SimpleTable({super.key});
+  const SimpleTable({
+    super.key,
+    required this.rows,
+  });
+
+  final List<dynamic> rows;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<MyDataRow> rows = List.generate(
-      5000,
-      (index) => MyDataRow(
-        id: 'ID$index',
-        name: 'Product $index',
-        quantity: 100 + index,
-        price: 9.99 + index,
-      ),
-    );
-
     final ScrollController scrollController = ScrollController();
     const double minWidth = 800;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text("Table")),
-      body: Scrollbar(
-        controller: scrollController,
-        thumbVisibility: true,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final double tableWidth = constraints.maxWidth > minWidth
-                ? constraints.maxWidth
-                : minWidth;
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              controller: scrollController,
-              child: SizedBox(
-                width: tableWidth,
-                child: CustomScrollView(
-                  slivers: [
-                    SliverPersistentHeader(
-                      delegate: _StickyHeaderDelegate(
-                        height: 56,
-                        child: const TableColumn(),
-                      ),
-                      pinned: true,
+    return Scrollbar(
+      controller: scrollController,
+      thumbVisibility: true,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final double tableWidth =
+              constraints.maxWidth > minWidth ? constraints.maxWidth : minWidth;
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            controller: scrollController,
+            child: SizedBox(
+              width: tableWidth,
+              child: CustomScrollView(
+                slivers: [
+                  SliverPersistentHeader(
+                    delegate: _StickyHeaderDelegate(
+                      height: 56,
+                      child: const TableHeader(),
                     ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final row = rows[index];
-                          return TableRowWidget(row: row);
-                        },
-                        childCount: rows.length,
-                      ),
-                    )
-                  ],
-                ),
+                    pinned: true,
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final row = rows[index];
+                        return TableDataField(row: row);
+                      },
+                      childCount: rows.length,
+                    ),
+                  )
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -96,8 +87,8 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 /// Table Columns Field
-class TableColumn extends ConsumerWidget {
-  const TableColumn({
+class TableHeader extends ConsumerWidget {
+  const TableHeader({
     super.key,
   });
 
@@ -115,17 +106,17 @@ class TableColumn extends ConsumerWidget {
               ref.read(selectedRowProvider.notifier).selectAll(value);
             },
           ),
-          const TableHeader(
+          const TableHeaderTile(
             title: "ID",
           ),
-          const TableHeader(
+          const TableHeaderTile(
             title: "Name",
             flex: 3,
           ),
-          const TableHeader(
+          const TableHeaderTile(
             title: "Quantity",
           ),
-          const TableHeader(
+          const TableHeaderTile(
             title: "Price",
           ),
         ],
@@ -134,70 +125,9 @@ class TableColumn extends ConsumerWidget {
   }
 }
 
-/// Table Row widget
-class TableRowWidget extends ConsumerWidget {
-  const TableRowWidget({Key? key, required this.row}) : super(key: key);
-
-  final MyDataRow row;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedRows = ref.watch(selectedRowProvider);
-    final isSelected = selectedRows.contains(row.id);
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-          child: Row(
-            children: [
-              Checkbox(
-                value: isSelected,
-                onChanged: (bool? value) {
-                  ref.read(selectedRowProvider.notifier).update(value, row.id);
-                },
-              ),
-              TableData(title: row.id),
-              TableData(title: row.name, flex: 3),
-              TableData(title: '${row.quantity}'),
-              TableData(title: '\$${row.price.toStringAsFixed(2)}'),
-            ],
-          ),
-        ),
-
-        /// 구분자
-        const Divider(height: 1)
-      ],
-    );
-  }
-}
-
-/// Table Data Tile
-class TableData extends StatelessWidget {
-  const TableData({
-    Key? key,
-    this.flex = 2,
-    required this.title,
-  }) : super(key: key);
-
-  final int flex;
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: flex,
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        child: Text(title),
-      ),
-    );
-  }
-}
-
 /// Talbe Header Tile
-class TableHeader extends StatelessWidget {
-  const TableHeader({
+class TableHeaderTile extends StatelessWidget {
+  const TableHeaderTile({
     Key? key,
     this.flex = 2,
     required this.title,
@@ -227,6 +157,67 @@ class TableHeader extends StatelessWidget {
           ),
           textAlign: TextAlign.center, // 텍스트 중앙 정렬
         ),
+      ),
+    );
+  }
+}
+
+/// Table Row widget
+class TableDataField extends ConsumerWidget {
+  const TableDataField({Key? key, required this.row}) : super(key: key);
+
+  final MyDataRow row;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedRows = ref.watch(selectedRowProvider);
+    final isSelected = selectedRows.contains(row.id);
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          child: Row(
+            children: [
+              Checkbox(
+                value: isSelected,
+                onChanged: (bool? value) {
+                  ref.read(selectedRowProvider.notifier).update(value, row.id);
+                },
+              ),
+              TableDataTile(title: row.id),
+              TableDataTile(title: row.name, flex: 3),
+              TableDataTile(title: '${row.quantity}'),
+              TableDataTile(title: '\$${row.price.toStringAsFixed(2)}'),
+            ],
+          ),
+        ),
+
+        /// 구분자
+        const Divider(height: 1)
+      ],
+    );
+  }
+}
+
+/// Table Data Tile
+class TableDataTile extends StatelessWidget {
+  const TableDataTile({
+    Key? key,
+    this.flex = 2,
+    required this.title,
+  }) : super(key: key);
+
+  final int flex;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: flex,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        child: Text(title),
       ),
     );
   }

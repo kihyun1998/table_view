@@ -18,8 +18,10 @@ class TablePage extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(title: const Text("Example of TableView")),
-      body: const Center(
-        child: SimpleTable(),
+      body: Center(
+        child: SimpleTable(
+          rows: rows,
+        ),
       ),
     );
   }
