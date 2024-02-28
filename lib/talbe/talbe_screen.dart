@@ -10,13 +10,6 @@ class TalbeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final List<String> columns = [
-    //   'ID',
-    //   'Name',
-    //   'Quantity',
-    //   'Price',
-    // ];
-
     final List<MyDataRow> rows = List.generate(
       5000,
       (index) => MyDataRow(
@@ -47,8 +40,12 @@ class TalbeScreen extends ConsumerWidget {
                 width: tableWidth,
                 child: CustomScrollView(
                   slivers: [
-                    const SliverToBoxAdapter(
-                      child: TableColumn(),
+                    SliverPersistentHeader(
+                      delegate: _StickyHeaderDelegate(
+                        height: 56,
+                        child: const TableColumn(),
+                      ),
+                      pinned: true,
                     ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
@@ -67,6 +64,36 @@ class TalbeScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
+  _StickyHeaderDelegate({
+    required this.child,
+    required this.height,
+  });
+
+  final Widget child;
+  final double height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      height: height,
+      color: Colors.white,
+      child: child,
+    );
+  }
+
+  @override
+  double get minExtent => height;
+  @override
+  double get maxExtent => height;
+
+  @override
+  bool shouldRebuild(_StickyHeaderDelegate oldDelegate) {
+    return oldDelegate.child != child || oldDelegate.height != height;
   }
 }
 
