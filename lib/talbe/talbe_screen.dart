@@ -27,16 +27,44 @@ class TalbeScreen extends ConsumerWidget {
       ),
     );
 
+    final ScrollController scrollController = ScrollController();
+    const double minWidth = 800;
+
     return Scaffold(
       appBar: AppBar(title: const Text("Table")),
-      body: Column(
-        children: [
-          /// TableHeaders
-          const TableColumn(),
-
-          /// TableRows
-          TableRow(rows: rows),
-        ],
+      body: Scrollbar(
+        controller: scrollController,
+        thumbVisibility: true,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final double tableWidth = constraints.maxWidth > minWidth
+                ? constraints.maxWidth
+                : minWidth;
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              controller: scrollController,
+              child: SizedBox(
+                width: tableWidth,
+                child: CustomScrollView(
+                  slivers: [
+                    const SliverToBoxAdapter(
+                      child: TableColumn(),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final row = rows[index];
+                          return TableRowWidget(row: row);
+                        },
+                        childCount: rows.length,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -81,54 +109,40 @@ class TableColumn extends ConsumerWidget {
   }
 }
 
-/// Table Rows Field
-class TableRow extends ConsumerWidget {
-  const TableRow({
-    super.key,
-    required this.rows,
-  });
+/// Table Row widget
+class TableRowWidget extends ConsumerWidget {
+  const TableRowWidget({Key? key, required this.row}) : super(key: key);
 
-  final List<MyDataRow> rows;
+  final MyDataRow row;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedRows = ref.watch(selectedRowProvider);
-    return Expanded(
-      child: ListView.separated(
-        /// row's length
-        itemCount: rows.length,
+    final isSelected = selectedRows.contains(row.id);
 
-        /// item builder
-        /// Area to make rows
-        itemBuilder: (context, index) {
-          final row = rows[index];
-          final isSelected = selectedRows.contains(row.id);
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            child: Row(
-              children: [
-                Checkbox(
-                  value: isSelected,
-                  onChanged: (bool? value) {
-                    ref
-                        .read(selectedRowProvider.notifier)
-                        .update(value, row.id);
-                  },
-                ),
-                TableData(title: row.id),
-                TableData(title: row.name, flex: 3),
-                TableData(title: '${row.quantity}'),
-                TableData(title: '\$${row.price.toStringAsFixed(2)}'),
-              ],
-            ),
-          );
-        },
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          child: Row(
+            children: [
+              Checkbox(
+                value: isSelected,
+                onChanged: (bool? value) {
+                  ref.read(selectedRowProvider.notifier).update(value, row.id);
+                },
+              ),
+              TableData(title: row.id),
+              TableData(title: row.name, flex: 3),
+              TableData(title: '${row.quantity}'),
+              TableData(title: '\$${row.price.toStringAsFixed(2)}'),
+            ],
+          ),
+        ),
 
-        /// Area for divider
-        separatorBuilder: (context, index) {
-          return const Divider();
-        },
-      ),
+        /// 구분자
+        const Divider(height: 1)
+      ],
     );
   }
 }
