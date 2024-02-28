@@ -3,15 +3,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_view/talbe/model.dart';
 import 'package:table_view/talbe/provider/selected_provider.dart';
 
+class TableContainerStyle {
+  TableContainerStyle({
+    EdgeInsetsGeometry? tablePadding,
+  }) : tablePadding = tablePadding ?? const EdgeInsets.all(0);
+
+  final EdgeInsetsGeometry? tablePadding;
+}
+
 class SimpleTable extends ConsumerWidget {
   const SimpleTable({
     super.key,
     required this.rows,
+    this.padding,
     double? minWidth,
   }) : minWidth = minWidth ?? 0.0;
 
   final List<dynamic> rows;
   final double minWidth;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,7 +37,8 @@ class SimpleTable extends ConsumerWidget {
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             controller: scrollController,
-            child: SizedBox(
+            child: Container(
+              padding: padding,
               width: tableWidth,
               child: CustomScrollView(
                 slivers: [
@@ -55,6 +66,12 @@ class SimpleTable extends ConsumerWidget {
       ),
     );
   }
+
+  double maxWidth(BuildContext context) {
+    // 현재 화면 크기를 기반으로 최소 너비 결정
+    double screenWidth = MediaQuery.of(context).size.width;
+    return screenWidth > minWidth ? screenWidth : minWidth;
+  }
 }
 
 class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -71,7 +88,7 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       height: height,
-      color: Colors.white,
+      color: Colors.blue,
       child: child,
     );
   }
@@ -112,7 +129,6 @@ class TableHeader extends ConsumerWidget {
           ),
           const TableHeaderTile(
             title: "Name",
-            flex: 3,
           ),
           const TableHeaderTile(
             title: "Quantity",
@@ -143,13 +159,13 @@ class TableHeaderTile extends StatelessWidget {
       flex: flex,
       child: Container(
         padding: const EdgeInsets.all(8), // 패딩 추가
-        decoration: BoxDecoration(
-          color: Colors.blueGrey[100], // 배경색 추가
-          border: const Border(
-            right: BorderSide(color: Colors.grey, width: 0.5), // 우측 경계선 추가
-            bottom: BorderSide(color: Colors.grey, width: 0.5), // 하단 경계선 추가
-          ),
-        ),
+        decoration: const BoxDecoration(
+            // color: Colors.blueGrey[100], // 배경색 추가
+            // border: const Border(
+            //   right: BorderSide(color: Colors.grey, width: 0.5),
+            //   bottom: BorderSide(color: Colors.grey, width: 0.5),
+            // ),
+            ),
         child: Text(
           title,
           style: const TextStyle(
@@ -187,7 +203,7 @@ class TableDataField extends ConsumerWidget {
                 },
               ),
               TableDataTile(title: row.id),
-              TableDataTile(title: row.name, flex: 3),
+              TableDataTile(title: row.name),
               TableDataTile(title: '${row.quantity}'),
               TableDataTile(title: '\$${row.price.toStringAsFixed(2)}'),
             ],

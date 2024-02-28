@@ -20,8 +20,14 @@ class TablePage extends StatelessWidget {
       appBar: AppBar(title: const Text("Example of TableView")),
       body: Center(
         child: SimpleTable(
-          rows: rows,
+          /// Table's Padding
+          padding: const EdgeInsets.all(10),
+
+          /// min table width
           minWidth: 800,
+
+          /// list of data
+          rows: rows,
         ),
       ),
     );
