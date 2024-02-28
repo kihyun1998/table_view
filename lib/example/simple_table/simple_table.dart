@@ -13,11 +13,11 @@ class TableContainerStyle {
 
 class SimpleTable extends ConsumerWidget {
   const SimpleTable({
-    super.key,
+    Key? key,
     required this.rows,
     this.padding,
-    double? minWidth,
-  }) : minWidth = minWidth ?? 0.0;
+    this.minWidth = 0.0,
+  }) : super(key: key);
 
   final List<dynamic> rows;
   final double minWidth;
