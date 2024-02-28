@@ -13,11 +13,11 @@ class TableContainerStyle {
 
 class SimpleTable extends ConsumerWidget {
   const SimpleTable({
-    Key? key,
+    super.key,
     required this.rows,
     this.padding,
-    this.minWidth = 0.0,
-  }) : super(key: key);
+    double? minWidth,
+  }) : minWidth = minWidth ?? 0.0;
 
   final List<dynamic> rows;
   final double minWidth;
@@ -40,24 +40,20 @@ class SimpleTable extends ConsumerWidget {
             child: Container(
               padding: padding,
               width: tableWidth,
-              child: CustomScrollView(
-                slivers: [
-                  SliverPersistentHeader(
-                    delegate: _StickyHeaderDelegate(
-                      height: 56,
-                      child: const TableHeader(),
-                    ),
-                    pinned: true,
+              child: Column(
+                children: [
+                  Container(
+                    color: Colors.blue,
+                    child: const TableHeader(),
                   ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final row = rows[index];
-                        return TableDataField(row: row);
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: rows.length,
+                      itemBuilder: (context, index) {
+                        return TableDataField(row: rows[index]);
                       },
-                      childCount: rows.length,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -65,42 +61,6 @@ class SimpleTable extends ConsumerWidget {
         },
       ),
     );
-  }
-
-  double maxWidth(BuildContext context) {
-    // 현재 화면 크기를 기반으로 최소 너비 결정
-    double screenWidth = MediaQuery.of(context).size.width;
-    return screenWidth > minWidth ? screenWidth : minWidth;
-  }
-}
-
-class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
-  _StickyHeaderDelegate({
-    required this.child,
-    required this.height,
-  });
-
-  final Widget child;
-  final double height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      height: height,
-      color: Colors.blue,
-      child: child,
-    );
-  }
-
-  @override
-  double get minExtent => height;
-  @override
-  double get maxExtent => height;
-
-  @override
-  bool shouldRebuild(_StickyHeaderDelegate oldDelegate) {
-    return oldDelegate.child != child || oldDelegate.height != height;
   }
 }
 
