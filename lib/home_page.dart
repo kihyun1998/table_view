@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:table_view/example/table_view.dart';
 import 'package:table_view/talbe/talbe_screen.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,15 +12,29 @@ class HomePage extends StatelessWidget {
         title: const Text("Home"),
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const TalbeScreen(),
-              ),
-            );
-          },
-          child: const Text("Column"),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const TableScreen(),
+                  ),
+                );
+              },
+              child: const Text("Column"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const TablePage(),
+                  ),
+                );
+              },
+              child: const Text("Table page"),
+            ),
+          ],
         ),
       ),
     );

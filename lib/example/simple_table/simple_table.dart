@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_view/talbe/model.dart';
 import 'package:table_view/talbe/provider/selected_provider.dart';
 
-class TableScreen extends ConsumerWidget {
-  const TableScreen({super.key});
+class SimpleTable extends ConsumerWidget {
+  const SimpleTable({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
