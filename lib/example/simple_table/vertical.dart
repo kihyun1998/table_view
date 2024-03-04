@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:table_view/example/simple_table/simple_table.dart';
+import 'package:table_view/talbe/model.dart';
 
 class VerticalScrollbar extends StatefulWidget {
   const VerticalScrollbar({super.key});
@@ -8,75 +10,94 @@ class VerticalScrollbar extends StatefulWidget {
 }
 
 class _VerticalScrollbarState extends State<VerticalScrollbar> {
-  final ScrollController _verticalScrollController = ScrollController();
-  bool _isHoveringVertical = false;
   final double minWidth = 600.0;
+  bool _isHover = false;
+  final ScrollController _horizontalScrollController = ScrollController();
+  final ScrollController _verticalScrollController = ScrollController();
+  final List<MyDataRow> rows = List.generate(
+    5000,
+    (index) => MyDataRow(
+      id: 'ID$index',
+      name: 'Product $index',
+      quantity: 100 + index,
+      price: 9.99 + index,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Vertical Dynamic Scrollbars with Rows'),
-      ),
+      appBar: AppBar(title: const Text("Vertical")),
       body: MouseRegion(
-        onEnter: (_) => setState(() => _isHoveringVertical = true),
-        onExit: (_) => setState(() => _isHoveringVertical = false),
+        onEnter: (_) => setState(() => _isHover = true),
+        onExit: (_) => setState(() => _isHover = false),
         child: LayoutBuilder(
-          builder: (context, constraints) {
+          builder: (BuildContext context, BoxConstraints constraints) {
+            // 화면 너비 체크
             if (constraints.maxWidth >= minWidth) {
-              return Scrollbar(
-                controller: _verticalScrollController,
-                thumbVisibility: _isHoveringVertical,
-                child: ListView.builder(
-                  controller: _verticalScrollController,
-                  itemCount: 20, // Number of items in the list
-                  itemBuilder: (context, index) => SizedBox(
-                    height: 100, // Height of each row
-                    child: Row(
-                      children: [
-                        // Example of multiple containers within a row for each list item
-                        for (int i = 0;
-                            i < 3;
-                            i++) // Creates 3 containers in each row
-                          Expanded(
-                            child: Container(
-                              color: Colors.green[(index % 9 + 1) * 100],
-                              child: Center(
-                                child: Text(
-                                    'Item ${index}_$i'), // Unique text for each container
-                              ),
-                            ),
-                          ),
-                      ],
+              // minWidth 이상일 경우 Expanded 위젯을 사용
+              return SizedBox(
+                width: constraints.maxWidth,
+                child: Column(
+                  children: [
+                    Container(
+                      color: Colors.blue,
+                      child: const TableHeader(),
                     ),
-                  ),
+                    Expanded(
+                      child: Container(
+                        height: double.infinity, // 높이 설정
+                        alignment: Alignment.center,
+                        child: Scrollbar(
+                          controller: _verticalScrollController,
+                          thumbVisibility: _isHover,
+                          child: ListView.builder(
+                            controller: _verticalScrollController,
+                            itemCount: rows.length,
+                            itemBuilder: (context, index) {
+                              return TableDataField(row: rows[index]);
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               );
             } else {
+              // minWidth 미만일 경우 minWidth 크기의 Container를 스크롤 가능하게 유지
               return Scrollbar(
                 controller: _verticalScrollController,
-                thumbVisibility: _isHoveringVertical,
-                child: ListView.builder(
-                  controller: _verticalScrollController,
-                  itemCount: 20, // Number of items in the list
-                  itemBuilder: (context, index) => SizedBox(
-                    height: 100, // Height of each row
-                    child: Row(
-                      children: [
-                        // Example of multiple containers within a row for each list item
-                        for (int i = 0;
-                            i < 3;
-                            i++) // Creates 3 containers in each row
+                thumbVisibility: _isHover,
+                child: Scrollbar(
+                  controller: _horizontalScrollController,
+                  thumbVisibility: _isHover,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    controller: _horizontalScrollController,
+                    child: SizedBox(
+                      width: minWidth,
+                      child: Column(
+                        children: [
+                          Container(
+                            color: Colors.blue,
+                            child: const TableHeader(),
+                          ),
                           Expanded(
                             child: Container(
-                              color: Colors.green[(index % 9 + 1) * 100],
-                              child: Center(
-                                child: Text(
-                                    'Item ${index}_$i'), // Unique text for each container
+                              height: double.infinity, // 높이 설정
+                              alignment: Alignment.center,
+                              child: ListView.builder(
+                                controller: _verticalScrollController,
+                                itemCount: rows.length,
+                                itemBuilder: (context, index) {
+                                  return TableDataField(row: rows[index]);
+                                },
                               ),
                             ),
                           ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

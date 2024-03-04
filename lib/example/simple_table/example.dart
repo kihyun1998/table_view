@@ -6,7 +6,7 @@ class Example extends StatefulWidget {
   const Example({super.key});
 
   @override
-  State<Example> createState() => _ExampleState();
+  _ExampleState createState() => _ExampleState();
 }
 
 class _ExampleState extends State<Example> {
@@ -23,10 +23,11 @@ class _ExampleState extends State<Example> {
       price: 9.99 + index,
     ),
   );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Example")),
+      appBar: AppBar(title: const Text("Vertical")),
       body: MouseRegion(
         onEnter: (_) => setState(() => _isHover = true),
         onExit: (_) => setState(() => _isHover = false),
@@ -66,34 +67,37 @@ class _ExampleState extends State<Example> {
             } else {
               // minWidth 미만일 경우 minWidth 크기의 Container를 스크롤 가능하게 유지
               return Scrollbar(
-                controller: _horizontalScrollController,
+                controller: _verticalScrollController,
                 thumbVisibility: _isHover,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                child: Scrollbar(
                   controller: _horizontalScrollController,
-                  child: SizedBox(
-                    width: minWidth,
-                    child: Column(
-                      children: [
-                        Container(
-                          color: Colors.blue,
-                          child: const TableHeader(),
-                        ),
-                        Expanded(
-                          child: Container(
-                            height: double.infinity, // 높이 설정
-                            alignment: Alignment.center,
-                            child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              // controller: _verticalScrollController,
-                              itemCount: rows.length,
-                              itemBuilder: (context, index) {
-                                return TableDataField(row: rows[index]);
-                              },
+                  thumbVisibility: _isHover,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    controller: _horizontalScrollController,
+                    child: SizedBox(
+                      width: minWidth,
+                      child: Column(
+                        children: [
+                          Container(
+                            color: Colors.blue,
+                            child: const TableHeader(),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: double.infinity, // 높이 설정
+                              alignment: Alignment.center,
+                              child: ListView.builder(
+                                controller: _verticalScrollController,
+                                itemCount: rows.length,
+                                itemBuilder: (context, index) {
+                                  return TableDataField(row: rows[index]);
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

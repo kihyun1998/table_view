@@ -4,6 +4,7 @@ import 'package:table_view/example/simple_table/horizontal.dart';
 import 'package:table_view/example/simple_table/vertical.dart';
 import 'package:table_view/example/table_view.dart';
 import 'package:table_view/talbe/talbe_screen.dart';
+import 'package:table_view/test/test1.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -70,6 +71,17 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text("example"),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Test1(),
+                  ),
+                );
+              },
+              child: const Text("test1"),
             ),
           ],
         ),
