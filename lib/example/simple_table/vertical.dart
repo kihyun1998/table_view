@@ -10,6 +10,7 @@ class VerticalScrollbar extends StatefulWidget {
 class _VerticalScrollbarState extends State<VerticalScrollbar> {
   final ScrollController _verticalScrollController = ScrollController();
   bool _isHoveringVertical = false;
+  final double minWidth = 600.0;
 
   @override
   Widget build(BuildContext context) {
@@ -20,33 +21,68 @@ class _VerticalScrollbarState extends State<VerticalScrollbar> {
       body: MouseRegion(
         onEnter: (_) => setState(() => _isHoveringVertical = true),
         onExit: (_) => setState(() => _isHoveringVertical = false),
-        child: Scrollbar(
-          controller: _verticalScrollController,
-          thumbVisibility: _isHoveringVertical,
-          child: ListView.builder(
-            controller: _verticalScrollController,
-            itemCount: 20, // Number of items in the list
-            itemBuilder: (context, index) => SizedBox(
-              height: 100, // Height of each row
-              child: Row(
-                children: [
-                  // Example of multiple containers within a row for each list item
-                  for (int i = 0;
-                      i < 3;
-                      i++) // Creates 3 containers in each row
-                    Expanded(
-                      child: Container(
-                        color: Colors.green[(index % 9 + 1) * 100],
-                        child: Center(
-                          child: Text(
-                              'Item ${index}_$i'), // Unique text for each container
-                        ),
-                      ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth >= minWidth) {
+              return Scrollbar(
+                controller: _verticalScrollController,
+                thumbVisibility: _isHoveringVertical,
+                child: ListView.builder(
+                  controller: _verticalScrollController,
+                  itemCount: 20, // Number of items in the list
+                  itemBuilder: (context, index) => SizedBox(
+                    height: 100, // Height of each row
+                    child: Row(
+                      children: [
+                        // Example of multiple containers within a row for each list item
+                        for (int i = 0;
+                            i < 3;
+                            i++) // Creates 3 containers in each row
+                          Expanded(
+                            child: Container(
+                              color: Colors.green[(index % 9 + 1) * 100],
+                              child: Center(
+                                child: Text(
+                                    'Item ${index}_$i'), // Unique text for each container
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                ],
-              ),
-            ),
-          ),
+                  ),
+                ),
+              );
+            } else {
+              return Scrollbar(
+                controller: _verticalScrollController,
+                thumbVisibility: _isHoveringVertical,
+                child: ListView.builder(
+                  controller: _verticalScrollController,
+                  itemCount: 20, // Number of items in the list
+                  itemBuilder: (context, index) => SizedBox(
+                    height: 100, // Height of each row
+                    child: Row(
+                      children: [
+                        // Example of multiple containers within a row for each list item
+                        for (int i = 0;
+                            i < 3;
+                            i++) // Creates 3 containers in each row
+                          Expanded(
+                            child: Container(
+                              color: Colors.green[(index % 9 + 1) * 100],
+                              child: Center(
+                                child: Text(
+                                    'Item ${index}_$i'), // Unique text for each container
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+          },
         ),
       ),
     );
