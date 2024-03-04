@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           scrollbarTheme: ScrollbarThemeData(
               thumbColor:
-                  MaterialStateColor.resolveWith((states) => Colors.blue))),
+                  MaterialStateColor.resolveWith((states) => Colors.black))),
       home: const HomePage(),
     );
   }

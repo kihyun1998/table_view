@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:table_view/example/simple_table/spage.dart';
+import 'package:table_view/example/simple_table/example.dart';
+import 'package:table_view/example/simple_table/horizontal.dart';
+import 'package:table_view/example/simple_table/vertical.dart';
 import 'package:table_view/example/table_view.dart';
 import 'package:table_view/talbe/talbe_screen.dart';
 
@@ -41,11 +43,33 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const ScrollableTableExample(),
+                    builder: (context) => const Horizontal(),
                   ),
                 );
               },
-              child: const Text("scroll page"),
+              child: const Text("horizontal"),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const VerticalScrollbar(),
+                  ),
+                );
+              },
+              child: const Text("vertical"),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Example(),
+                  ),
+                );
+              },
+              child: const Text("example"),
             ),
           ],
         ),

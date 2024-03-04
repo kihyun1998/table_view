@@ -3,15 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_view/talbe/model.dart';
 import 'package:table_view/talbe/provider/selected_provider.dart';
 
-class TableContainerStyle {
-  TableContainerStyle({
-    EdgeInsetsGeometry? tablePadding,
-  }) : tablePadding = tablePadding ?? const EdgeInsets.all(0);
-
-  final EdgeInsetsGeometry? tablePadding;
-}
-
-class SimpleTable extends ConsumerWidget {
+class SimpleTable extends ConsumerStatefulWidget {
   const SimpleTable({
     super.key,
     required this.rows,
@@ -24,41 +16,57 @@ class SimpleTable extends ConsumerWidget {
   final EdgeInsetsGeometry? padding;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ScrollController scrollController = ScrollController();
+  ConsumerState<SimpleTable> createState() => _SimpleTableState();
+}
 
-    return Scrollbar(
-      controller: scrollController,
-      thumbVisibility: true,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final double tableWidth =
-              constraints.maxWidth > minWidth ? constraints.maxWidth : minWidth;
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            controller: scrollController,
-            child: Container(
-              padding: padding,
-              width: tableWidth,
-              child: Column(
-                children: [
-                  Container(
-                    color: Colors.blue,
-                    child: const TableHeader(),
+class _SimpleTableState extends ConsumerState<SimpleTable> {
+  bool _isHover = false;
+  final ScrollController _horizontalScrollController = ScrollController();
+  final ScrollController _verticalScrollController = ScrollController();
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHover = true),
+      onExit: (_) => setState(() => _isHover = false),
+      child: Scrollbar(
+        controller: _horizontalScrollController,
+        thumbVisibility: _isHover,
+        child: Scrollbar(
+          controller: _verticalScrollController,
+          thumbVisibility: _isHover,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final double tableWidth = constraints.maxWidth > widget.minWidth
+                  ? constraints.maxWidth
+                  : widget.minWidth;
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: _horizontalScrollController,
+                child: Container(
+                  padding: widget.padding,
+                  width: tableWidth,
+                  child: Column(
+                    children: [
+                      Container(
+                        color: Colors.blue,
+                        child: const TableHeader(),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          controller: _verticalScrollController,
+                          itemCount: widget.rows.length,
+                          itemBuilder: (context, index) {
+                            return TableDataField(row: widget.rows[index]);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: rows.length,
-                      itemBuilder: (context, index) {
-                        return TableDataField(row: rows[index]);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
